@@ -1,4 +1,3 @@
-
 %
 %This script runs an experiment on 5 classes. It reads the histogram data
 %for each class. Then it adds the histograms and names to histograms and
@@ -17,20 +16,24 @@
 %
 %
 
-
-classNum = 5;
+classNum = 10;
 i=1;
 histograms = [];
 labels = [];
 testHistograms = [];
 testLabels = [];
-
+testNames = [];
 
 for subset = {'admiral', ...
               'machaon', ...
               'peacock', ...
               'swallowtail', ...
-              'zebra'}
+              'zebra', ...
+              'cabbagewhite', ...
+              'buckeye', ...
+              'mourningcloak', ...
+              'paintedlady', ...
+              'longwing'}
   fprintf('Processing %s\n', char(subset)) ;
   
   pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
@@ -48,76 +51,76 @@ clear pos;
 %
 %--------------------------Testing data---------------------------
 %-----------------------------------------------------------------
-i=1;
-for subset = {'admiral_val', ...
-              'machaon_val', ...
-              'peacock_val', ...
-              'swallowtail_val', ...
-              'zebra_val'}
-  fprintf('Processing %s\n', char(subset)) ;
-  
-  pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
-  i=i+1;
-end
-for i=1:classNum
+% i=1;
+% for subset = {'admiral_val', ...
+%               'machaon_val', ...
+%               'peacock_val', ...
+%               'swallowtail_val', ...
+%               'zebra_val'}
+%   fprintf('Processing %s\n', char(subset)) ;
+%   
+%   pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
+%   i=i+1;
+% end
+% for i=1:classNum
+% 
+%    testNames{i}=pos{i}.names{:};
+%    testHistograms = [testHistograms,pos{i}.histograms];
+%    testLabels = [testLabels,i-1+ones(1,numel(pos{i}.names))];
+% end
+% 
+% clear pos
 
-   testNames{i}=pos{i}.names{:};
-   testHistograms = [testHistograms,pos{i}.histograms];
-   testLabels = [testLabels,i-1+ones(1,numel(pos{i}.names))];
-end
-
-clear pos
-
-%-------------------Display counts-----------------------
+% %-------------------Display counts-----------------------
 u=unique(labels);
 numClasses=length(u);
 
 u=unique(testLabels);
 numTestClasses=length(u);
 % count how many images are there
-fprintf('Number of training images: %d images, %d classes\n', ...
+fprintf('number of training images: %d images, %d classes\n', ...
         size(labels,2), numClasses) ;
-fprintf('Number of testing images: %d images, %d classes\n', ...
-        size(testLabels,2),numTestClasses) ;
-
-
-%--------------------Normalize-------------
-%----------------------L2
+% fprintf('Number of testing images: %d images, %d classes\n', ...
+%         size(testLabels,2),numTestClasses) ;
+% 
+% 
+% %--------------------Normalize-------------
+% %----------------------L2
 
 histograms = bsxfun(@times, histograms, 1./sqrt(sum(histograms.^2,1))) ;
 testHistograms = bsxfun(@times, testHistograms, 1./sqrt(sum(testHistograms.^2,1))) ;
+ 
 
-
-%-------------------------------SVM-----------------------
-
-[models, numClasses] = multisvm1(double(histograms'),labels');
-[result] = multiclassify( testHistograms', models, numClasses );
-
-%WHAT IS RESULTS???
-
-
-% Visualize the ranked list of images
-%figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
-%displayRankedImageList(names, result)  ;
-
-% Visualize the precision-recall curve
-% ----but have to do it for each class individually
-%figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
-%vl_pr(testLabels', result) ;
-
-labelsCopy = testLabels';
-resultsCopy = result;
-
-accuracy = testLabels'-result;
-errors = sum(accuracy~=0);
-fprintf('Accuracy %d/%d\n', size(accuracy,1)-errors, size(accuracy,1));
-fprintf('Result: %3.3f%%\n', 100*(size(accuracy,1)-errors)/size(accuracy,1));
+% %-------------------------------SVM-----------------------
+% 
+% [models, numClasses] = multisvm1(double(histograms'),labels');
+% [result] = multiclassify( testHistograms', models, numClasses );
+% 
+% %WHAT IS RESULTS???
+% 
+% 
+% % Visualize the ranked list of images
+% %figure(1) ; clf ; set(1,'name','Ranked training images (subset)') ;
+% %displayRankedImageList(names, result)  ;
+% 
+% % Visualize the precision-recall curve
+% % ----but have to do it for each class individually
+% %figure(2) ; clf ; set(2,'name','Precision-recall on train data') ;
+% %vl_pr(testLabels', result) ;
+% 
+% labelsCopy = testLabels';
+% resultsCopy = result;
+% 
+% accuracy = testLabels'-result;
+% errors = sum(accuracy~=0);
+% fprintf('Accuracy %d/%d\n', size(accuracy,1)-errors, size(accuracy,1));
+% fprintf('Result: %3.3f%%\n', 100*(size(accuracy,1)-errors)/size(accuracy,1));
 
 
 %----------------------CV------------------------------------------------
 %------------------------------------------------------------------------
 
-%      % Create a 10-fold cross-validation to compute classification error.
+% Create a 10-fold cross-validation to compute classification error.
 
      indices = crossvalind('Kfold',labels',10);
      cp = classperf(labels');
@@ -131,6 +134,7 @@ fprintf('Result: %3.3f%%\n', 100*(size(accuracy,1)-errors)/size(accuracy,1));
          
          classperf(cp,class,test);
      end
+    
      cp.CorrectRate
 
 % for class=1:numClasses

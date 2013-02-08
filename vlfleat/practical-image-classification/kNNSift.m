@@ -17,7 +17,7 @@
 %
 
 
-classNum = 5;
+classNum = 10;
 i=1;
 histograms = [];
 labels = [];
@@ -29,7 +29,12 @@ for subset = {'admiral', ...
               'machaon', ...
               'peacock', ...
               'swallowtail', ...
-              'zebra'}
+              'zebra', ...
+              'cabbagewhite', ...
+              'buckeye', ...
+              'mourningcloak', ...
+              'paintedlady', ...
+              'longwing'}
   fprintf('Processing %s\n', char(subset)) ;
   
   pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
@@ -47,25 +52,25 @@ clear pos;
 %
 %--------------------------Testing data---------------------------
 %-----------------------------------------------------------------
-i=1;
-for subset = {'admiral_val', ...
-              'machaon_val', ...
-              'peacock_val', ...
-              'swallowtail_val', ...
-              'zebra_val'}
-  fprintf('Processing %s\n', char(subset)) ;
-  
-  pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
-  i=i+1;
-end
-for i=1:classNum
-
-   testNames{i}=pos{i}.names{:};
-   testHistograms = [testHistograms,pos{i}.histograms];
-   testLabels = [testLabels,i-1+ones(1,numel(pos{i}.names))];
-end
-
-clear pos
+% i=1;
+% for subset = {'admiral_val', ...
+%               'machaon_val', ...
+%               'peacock_val', ...
+%               'swallowtail_val', ...
+%               'zebra_val'}
+%   fprintf('Processing %s\n', char(subset)) ;
+%   
+%   pos{i} = load(fullfile('data', [char(subset) '_hist.mat']));
+%   i=i+1;
+% end
+% for i=1:classNum
+% 
+%    testNames{i}=pos{i}.names{:};
+%    testHistograms = [testHistograms,pos{i}.histograms];
+%    testLabels = [testLabels,i-1+ones(1,numel(pos{i}.names))];
+% end
+% 
+% clear pos
 
 %-------------------Display counts-----------------------
 u=unique(labels);
@@ -91,16 +96,16 @@ testHistograms = bsxfun(@times, testHistograms, 1./sqrt(sum(testHistograms.^2,1)
 
 
 nearestNeighborsNumber =1;
-outclass = knnclassify(testHistograms', histograms',labels',nearestNeighborsNumber,'cosine','nearest');
-%[neighbours ~]=kNearestNeighbors(histograms',testHistograms',nearestNeighborsNumber);
-
-cp = classperf(testLabels',outclass);
-cp.CorrectRate
-resultLabels = outclass-testLabels';
-errors = sum(resultLabels~=0);
-
-fprintf('Accuracy %d/%d\n', size(accuracy,1)-errors, size(accuracy,1));
-fprintf('Result: %3.3f%%\n', 100*(size(accuracy,1)-errors)/size(accuracy,1));
+% outclass = knnclassify(testHistograms', histograms',labels',nearestNeighborsNumber,'cosine','nearest');
+% %[neighbours ~]=kNearestNeighbors(histograms',testHistograms',nearestNeighborsNumber);
+% 
+% cp = classperf(testLabels',outclass);
+% cp.CorrectRate
+% resultLabels = outclass-testLabels';
+% errors = sum(resultLabels~=0);
+% 
+% fprintf('Accuracy %d/%d\n', size(accuracy,1)-errors, size(accuracy,1));
+% fprintf('Result: %3.3f%%\n', 100*(size(accuracy,1)-errors)/size(accuracy,1));
 
 
 

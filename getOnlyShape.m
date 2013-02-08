@@ -1,6 +1,5 @@
 function [orig]=getOnlyShape( filename )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%remove dots, blue background and crop
 
 
 im = imread(filename);

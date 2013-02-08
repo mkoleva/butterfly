@@ -1,0 +1,20 @@
+				Files from PONCE:				from LBD
+---------------------------------------------------------------------				
+zebra			yes			20					class 2
+peacock			yes			80					x
+admiral			yes			all					class 9 (Red Admiral)
+swallowtail		yes			20					class 7 (Giant Swallowtail)
+machaon			yes			55					x
+
+Longwing		x								class 3 
+Common Buckeye	x								class 4
+American Copper	x								class 5
+Mourning Cloak	x								class 6
+Cabbage White	x								class 8
+Painted Lady	x								class 10
+
+to add:
+----------------------------------------------------------------------
+monarch			yes			0					class 1
+
+---------------------------------------------------------------------

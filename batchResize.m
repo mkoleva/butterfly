@@ -1,15 +1,14 @@
 function [] = batchResize( filenames, maxDim)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Batch resize function to resize images with maximum dimension maxDim
 nImages = length(filenames);
 
 parfor (i = 1:nImages)
     I = imread(filenames{i});
-    [rows,cols,d] = size(I);
+    [rows,cols,~] = size(I);
 
     bigger = max(rows,cols);
     if maxDim<bigger
-        scale = maxDim/bigger
+        scale = maxDim/bigger;
     else
         scale = 1;
     end
